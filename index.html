@@ -1,1 +1,286 @@
-hello2
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MOS Evaluation</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  max-width: 1100px;
+  margin: auto;
+}
+
+.stimulus {
+  margin-bottom: 50px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid #ccc;
+}
+
+label {
+  display: block;
+  margin: 4px 0;
+}
+
+button {
+  font-size: 16px;
+  padding: 12px 30px;
+  margin: 30px 0;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Mean Opinion Score (MOS) Evaluation</h2>
+<p>version: 26.02.02-1</p>
+
+<p>
+본 실험은 영상을 시청한 후, <b>영상에 표시된 그래프와 오디오의 타이밍이 얼마나 잘 맞는지</b>를 
+1점부터 5점까지 평가하는 실험입니다.
+</p>
+<p>
+각 샘플은 <b>서로 비교하지 말고</b>, 해당 샘플의 타이밍 일치 정도만을 기준으로 
+<b>절대적인 점수</b>를 부여해 주세요.
+</p>
+<p>
+※ 오디오의 음질이나 자연스러움은 평가 기준이 아닙니다.
+</p>
+
+<p><b>평가 기준</b></p>
+<ul>
+  <li>5 (Excellent): 그래프와 오디오의 타이밍이 완전히 일치함</li>
+  <li>4 (Good): 일부 어긋나는 부분이 있으나 전반적으로 잘 맞음</li>
+  <li>3 (Fair): 어긋나는 부분이 반복적으로 나타나나 대체로 맞는 편임</li>
+  <li>2 (Poor): 어긋나는 부분이 자주 나타남</li>
+  <li>1 (Bad): 타이밍이 거의 맞지 않음</li>
+</ul>
+
+<p>
+각 영상은 <b>0초부터 10초까지 전체를 시청한 후</b> 평가해 주세요.
+</p>
+<p>
+⚠️ 실험이 종료되면 결과 파일이 <b>자동으로 다운로드</b>됩니다.  
+실험 도중 브라우저를 닫지 않도록 주의해 주세요.
+</p>
+<p>
+🎧 조용한 환경에서 <b>헤드폰 사용</b>을 권장하며, 가능한 한 좋은 음향 장비를 사용해 주세요.  
+단, 타이밍 평가 실험이므로 <b>블루투스 헤드폰/이어폰은 사용하지 마세요.</b>
+</p>
+
+<div id="container"></div>
+
+<button id="nextBtn">Next</button>
+
+<script>
+/********************************************************
+ * CONFIGURATION
+ ********************************************************/
+
+const ITEMS_PER_PAGE = 5;
+
+/* FIXED SYNTAX (commas added) */
+const stimuli = [
+  { id: "v01", file: "./samples/video/0_ts/v_00.mp4" },
+  { id: "v02", file: "./samples/video/0_ts/v_01.mp4" },
+  { id: "v03", file: "./samples/video/0_ts/v_02.mp4" },
+  { id: "v04", file: "./samples/video/0_ts/v_03.mp4" },
+  { id: "v05", file: "./samples/video/0_ts/v_04.mp4" },
+  { id: "v06", file: "./samples/video/0_ts/v_05.mp4" },
+  { id: "v07", file: "./samples/video/0_ts/v_06.mp4" },
+  { id: "v08", file: "./samples/video/0_ts/v_07.mp4" },
+  { id: "v09", file: "./samples/video/0_ts/v_08.mp4" },
+  { id: "v10", file: "./samples/video/0_ts/v_09.mp4" },
+  { id: "v11", file: "./samples/video/0_ts/v_10.mp4" },
+  { id: "v12", file: "./samples/video/0_ts/v_11.mp4" },
+  { id: "v13", file: "./samples/video/0_ts/v_12.mp4" },
+  { id: "v14", file: "./samples/video/0_ts/v_13.mp4" },
+  { id: "v15", file: "./samples/video/0_ts/v_14.mp4" },
+  { id: "v16", file: "./samples/video/0_ts/v_15.mp4" },
+  { id: "v17", file: "./samples/video/0_ts/v_16.mp4" },
+  { id: "v18", file: "./samples/video/0_ts/v_17.mp4" },
+  { id: "v19", file: "./samples/video/0_ts/v_18.mp4" },
+  { id: "v20", file: "./samples/video/0_ts/v_19.mp4" },
+  { id: "v21", file: "./samples/video/1_rms/v_00.mp4" },
+  { id: "v22", file: "./samples/video/1_rms/v_01.mp4" },
+  { id: "v23", file: "./samples/video/1_rms/v_02.mp4" },
+  { id: "v24", file: "./samples/video/1_rms/v_03.mp4" },
+  { id: "v25", file: "./samples/video/1_rms/v_04.mp4" },
+  { id: "v26", file: "./samples/video/1_rms/v_05.mp4" },
+  { id: "v27", file: "./samples/video/1_rms/v_06.mp4" },
+  { id: "v28", file: "./samples/video/1_rms/v_07.mp4" },
+  { id: "v29", file: "./samples/video/1_rms/v_08.mp4" },
+  { id: "v30", file: "./samples/video/1_rms/v_09.mp4" },
+  { id: "v31", file: "./samples/video/1_rms/v_10.mp4" },
+  { id: "v32", file: "./samples/video/1_rms/v_11.mp4" },
+  { id: "v33", file: "./samples/video/1_rms/v_12.mp4" },
+  { id: "v34", file: "./samples/video/1_rms/v_13.mp4" },
+  { id: "v35", file: "./samples/video/1_rms/v_14.mp4" },
+  { id: "v36", file: "./samples/video/1_rms/v_15.mp4" },
+  { id: "v37", file: "./samples/video/1_rms/v_16.mp4" },
+  { id: "v38", file: "./samples/video/1_rms/v_17.mp4" },
+  { id: "v39", file: "./samples/video/1_rms/v_18.mp4" },
+  { id: "v40", file: "./samples/video/1_rms/v_19.mp4" },
+  { id: "v41", file: "./samples/video/2_em/v_00.mp4" },
+  { id: "v42", file: "./samples/video/2_em/v_01.mp4" },
+  { id: "v43", file: "./samples/video/2_em/v_02.mp4" },
+  { id: "v44", file: "./samples/video/2_em/v_03.mp4" },
+  { id: "v45", file: "./samples/video/2_em/v_04.mp4" },
+  { id: "v46", file: "./samples/video/2_em/v_05.mp4" },
+  { id: "v47", file: "./samples/video/2_em/v_06.mp4" },
+  { id: "v48", file: "./samples/video/2_em/v_07.mp4" },
+  { id: "v49", file: "./samples/video/2_em/v_08.mp4" },
+  { id: "v50", file: "./samples/video/2_em/v_09.mp4" },
+  { id: "v51", file: "./samples/video/2_em/v_10.mp4" },
+  { id: "v52", file: "./samples/video/2_em/v_11.mp4" },
+  { id: "v53", file: "./samples/video/2_em/v_12.mp4" },
+  { id: "v54", file: "./samples/video/2_em/v_13.mp4" },
+  { id: "v55", file: "./samples/video/2_em/v_14.mp4" },
+  { id: "v56", file: "./samples/video/2_em/v_15.mp4" },
+  { id: "v57", file: "./samples/video/2_em/v_16.mp4" },
+  { id: "v58", file: "./samples/video/2_em/v_17.mp4" },
+  { id: "v59", file: "./samples/video/2_em/v_18.mp4" },
+  { id: "v60", file: "./samples/video/2_em/v_19.mp4" },
+];
+
+/********************************************************
+ * VARIABLES
+ ********************************************************/
+
+let trials = [];
+let pageIndex = 0;
+let results = [];
+
+/********************************************************
+ * FUNCTIONS
+ ********************************************************/
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+/* participant-wise randomization */
+if (sessionStorage.getItem("mos_trials")) {
+  trials = JSON.parse(sessionStorage.getItem("mos_trials"));
+} else {
+  trials = stimuli.slice();
+  shuffle(trials);
+  sessionStorage.setItem("mos_trials", JSON.stringify(trials));
+}
+
+function loadPage() {
+  const container = document.getElementById("container");
+  container.innerHTML = "";
+
+  const start = pageIndex * ITEMS_PER_PAGE;
+  const current = trials.slice(start, start + ITEMS_PER_PAGE);
+
+  current.forEach((t, idx) => {
+
+    const block = document.createElement("div");
+    block.className = "stimulus";
+
+    const title = document.createElement("h4");
+    title.textContent = `Stimulus ${start + idx + 1}`;
+    block.appendChild(title);
+
+    /* video */
+    const video = document.createElement("video");
+    video.width = 900;
+    video.controls = true;
+
+    const source = document.createElement("source");
+    source.src = t.file;
+    source.type = "video/mp4";
+
+    video.appendChild(source);
+    block.appendChild(video);
+
+    /* MOS */
+    const q = document.createElement("p");
+    q.innerHTML = "<b>Overall perceived quality:</b>";
+    block.appendChild(q);
+
+    for (let score = 5; score >= 1; score--) {
+      const label = document.createElement("label");
+
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.name = "mos_" + t.id;
+      input.value = score;
+
+      label.appendChild(input);
+      label.appendChild(document.createTextNode(" " + score));
+
+      block.appendChild(label);
+    }
+
+    container.appendChild(block);
+  });
+}
+
+/********************************************************
+ * NEXT BUTTON
+ ********************************************************/
+
+document.getElementById("nextBtn").onclick = function () {
+
+  const start = pageIndex * ITEMS_PER_PAGE;
+  const current = trials.slice(start, start + ITEMS_PER_PAGE);
+
+  for (const t of current) {
+    const selected = document.querySelector(
+      `input[name="mos_${t.id}"]:checked`
+    );
+
+    if (!selected) {
+      alert("Please rate all videos on this page.");
+      return;
+    }
+
+    results.push({
+      stimulus: t.id,
+      mos: selected.value,
+      page: pageIndex + 1
+    });
+  }
+
+  pageIndex++;
+
+  if (pageIndex * ITEMS_PER_PAGE < trials.length) {
+    loadPage();
+  } else {
+    finish();
+  }
+};
+
+/********************************************************
+ * FINISH & DOWNLOAD
+ ********************************************************/
+
+function finish() {
+  let csv = "stimulus,mos,page\n";
+
+  results.forEach(r => {
+    csv += `${r.stimulus},${r.mos},${r.page}\n`;
+  });
+
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "mos_results.csv";
+  a.click();
+
+  document.body.innerHTML = "<h2>Thank you for your participation.</h2>";
+}
+
+loadPage();
+</script>
+
+</body>
+</html>
