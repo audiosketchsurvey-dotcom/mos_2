@@ -34,10 +34,10 @@ button {
 
 <h2>MOS Evaluation #2</h2>
 <p>
-본 실험은 영상을 시청한 후, <b>영상에 표시된 그래프를 기준으로 재생되는 오디오의 타이밍이 얼마나 잘 맞는지</b>를 1점부터 5점까지 평가하는 실험입니다.
+본 실험은 영상을 시청한 후, <b>영상에 표시된 그래프를 기준으로 재생되는 오디오의 시간적인 alignment가 얼마나 잘 맞는지</b>를 1점부터 5점까지 평가하는 실험입니다.
 </p>
 <p>
-각 샘플은 서로 비교하지 말고, 해당 오디오 샘플의 타이밍 일치 정도만을 기준으로 <b>절대적인 점수</b>를 부여해 주세요.
+각 샘플은 서로 비교하지 말고, 해당 오디오 샘플의 시간적 alignment 일치 정도만을 기준으로 <b>절대적인 점수</b>를 부여해 주세요.
 </p>
 <p>
 ※ 오디오의 음질이나 자연스러움은 평가 기준이 아닙니다. <b>소리의 등장과 사라짐이 그래프와 시간적으로 잘 맞는지</b>를 중심으로 평가해 주세요.
@@ -219,7 +219,7 @@ function loadPage() {
 
     /* MOS */
     const q = document.createElement("p");
-    q.innerHTML = "<b>Timing quality:</b>";
+    q.innerHTML = "<b>Alignment quality:</b>";
     block.appendChild(q);
 
     for (let score = 5; score >= 1; score--) {
